@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { generateContent } from "../utils/geminiClient";
-import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 type Message = {
   role: "user" | "ai" | "error";
@@ -24,50 +22,52 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const savedMessages = localStorage.getItem('chatMessages');
+    const savedMessages = localStorage.getItem("chatMessages");
     if (savedMessages) {
       try {
         const parsed = JSON.parse(savedMessages);
-        setMessages(parsed.map((msg: any) => ({
-          ...msg,
-          timestamp: msg.timestamp ? new Date(msg.timestamp) : undefined
-        })));
+        setMessages(
+          parsed.map((msg: any) => ({
+            ...msg,
+            timestamp: msg.timestamp ? new Date(msg.timestamp) : undefined,
+          }))
+        );
       } catch (e) {
         console.error("Failed to parse saved messages", e);
       }
     }
 
-    const blockUntil = localStorage.getItem('blockUntil');
+    const blockUntil = localStorage.getItem("blockUntil");
     if (blockUntil) {
       const blockUntilTime = parseInt(blockUntil);
       if (Date.now() < blockUntilTime) {
         setIsBlocked(true);
         setBlockTimeLeft(blockUntilTime - Date.now());
       } else {
-        localStorage.removeItem('blockUntil');
-        localStorage.removeItem('requestCount');
-        localStorage.removeItem('firstRequestTime');
+        localStorage.removeItem("blockUntil");
+        localStorage.removeItem("requestCount");
+        localStorage.removeItem("firstRequestTime");
       }
     }
   }, []);
 
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem('chatMessages', JSON.stringify(messages));
+      localStorage.setItem("chatMessages", JSON.stringify(messages));
     }
   }, [messages]);
 
   useEffect(() => {
     if (!isBlocked) return;
     const interval = setInterval(() => {
-      const blockUntil = parseInt(localStorage.getItem('blockUntil') || '0');
+      const blockUntil = parseInt(localStorage.getItem("blockUntil") || "0");
       const timeLeft = blockUntil - Date.now();
       setBlockTimeLeft(timeLeft);
       if (timeLeft <= 0) {
         setIsBlocked(false);
-        localStorage.removeItem('blockUntil');
-        localStorage.removeItem('requestCount');
-        localStorage.removeItem('firstRequestTime');
+        localStorage.removeItem("blockUntil");
+        localStorage.removeItem("requestCount");
+        localStorage.removeItem("firstRequestTime");
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -89,39 +89,46 @@ export default function Chat() {
       return;
     }
 
-    const requestCount = parseInt(localStorage.getItem('requestCount') || '0');
-    const firstRequestTime = parseInt(localStorage.getItem('firstRequestTime') || '0');
+    const requestCount = parseInt(localStorage.getItem("requestCount") || "0");
+    const firstRequestTime = parseInt(
+      localStorage.getItem("firstRequestTime") || "0"
+    );
 
     if (!firstRequestTime || Date.now() - firstRequestTime > BLOCK_TIME_MS) {
-      localStorage.setItem('firstRequestTime', Date.now().toString());
-      localStorage.setItem('requestCount', '1');
+      localStorage.setItem("firstRequestTime", Date.now().toString());
+      localStorage.setItem("requestCount", "1");
     } else if (requestCount >= MAX_REQUESTS) {
-      localStorage.setItem('blockUntil', (Date.now() + BLOCK_TIME_MS).toString());
+      localStorage.setItem(
+        "blockUntil",
+        (Date.now() + BLOCK_TIME_MS).toString()
+      );
       setIsBlocked(true);
-      alert('You have reached the maximum number of messages. Please wait 1 hour.');
+      alert(
+        "You have reached the maximum number of messages. Please wait 1 hour."
+      );
       return;
     } else {
-      localStorage.setItem('requestCount', (requestCount + 1).toString());
+      localStorage.setItem("requestCount", (requestCount + 1).toString());
     }
 
-    const userMessage: Message = { 
-      role: "user", 
+    const userMessage: Message = {
+      role: "user",
       content: input,
       timestamp: new Date(),
-      id: Date.now().toString()
+      id: Date.now().toString(),
     };
-    
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
 
     try {
       const result = await generateContent(input);
-      const aiMessage: Message = { 
-        role: "ai", 
+      const aiMessage: Message = {
+        role: "ai",
         content: result || "0",
         timestamp: new Date(),
-        id: Date.now().toString()
+        id: Date.now().toString(),
       };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
@@ -130,7 +137,7 @@ export default function Chat() {
         role: "error",
         content: "Failed to get response. Click to retry.",
         timestamp: new Date(),
-        id: Date.now().toString()
+        id: Date.now().toString(),
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -143,9 +150,9 @@ export default function Chat() {
   };
 
   const clearChat = () => {
-    if (confirm('Clear all messages?')) {
+    if (confirm("Clear all messages?")) {
       setMessages([]);
-      localStorage.removeItem('chatMessages');
+      localStorage.removeItem("chatMessages");
     }
   };
 
@@ -167,12 +174,13 @@ export default function Chat() {
       {/* Block Notice */}
       {isBlocked && (
         <div className="bg-red-100 text-red-700 text-center text-sm p-2">
-          You are blocked. Try again in {Math.ceil(blockTimeLeft / 60000)} minutes.
+          You are blocked. Try again in {Math.ceil(blockTimeLeft / 60000)}{" "}
+          minutes.
         </div>
       )}
 
       {/* Messages container */}
-      <div 
+      <div
         className="flex-1 overflow-y-auto p-4 space-y-4"
         onScroll={(e) => {
           const target = e.target as HTMLDivElement;
@@ -185,7 +193,9 @@ export default function Chat() {
           <div className="flex flex-col items-center justify-center h-full text-gray-400">
             <div className="text-center p-6 max-w-md">
               <h2 className="text-xl font-medium mb-2">Start a conversation</h2>
-              <p className="text-sm">Ask anything and Nekebot will respond to you here.</p>
+              <p className="text-sm">
+                Ask anything and Nekebot will respond to you here.
+              </p>
             </div>
           </div>
         )}
@@ -193,55 +203,64 @@ export default function Chat() {
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+            className={`flex ${
+              msg.role === "user" ? "justify-end" : "justify-start"
+            }`}
           >
             <div
-              className={`max-w-3xl rounded-lg px-4 py-3 ${msg.role === "user" 
-                ? "bg-blue-600 text-white rounded-br-none" 
-                : msg.role === "ai" 
+              className={`max-w-3xl rounded-lg px-4 py-3 ${
+                msg.role === "user"
+                  ? "bg-blue-600 text-white rounded-br-none"
+                  : msg.role === "ai"
                   ? "bg-white text-gray-800 shadow rounded-bl-none border border-gray-100"
                   : "bg-red-100 text-red-800 rounded-bl-none cursor-pointer hover:bg-red-200"
               }`}
-              onClick={msg.role === "error" ? () => {
-                setMessages(prev => {
-                  const newMessages = prev.filter(m => m.id !== msg.id);
-                  const lastUserMessage = [...newMessages].reverse().find(m => m.role === "user");
-                  if (lastUserMessage) {
-                    setInput(lastUserMessage.content);
-                    setTimeout(sendMessage, 100);
-                  }
-                  return newMessages;
-                });
-              } : undefined}
+              onClick={
+                msg.role === "error"
+                  ? () => {
+                      setMessages((prev) => {
+                        const newMessages = prev.filter((m) => m.id !== msg.id);
+                        const lastUserMessage = [...newMessages]
+                          .reverse()
+                          .find((m) => m.role === "user");
+                        if (lastUserMessage) {
+                          setInput(lastUserMessage.content);
+                          setTimeout(sendMessage, 100);
+                        }
+                        return newMessages;
+                      });
+                    }
+                  : undefined
+              }
             >
               <div className="whitespace-pre-wrap">
-              <ReactMarkdown 
-  components={{
-    code({ node, className, children, ...props }) {  // Removed inline from destructuring
-      const match = /language-(\w+)/.exec(className || '');
-      return match ? (
-        <SyntaxHighlighter 
-        style={solarizedlight}
-        language={match[1]}
-        PreTag="div"
-        {...props}
-      >
-          {String(children).replace(/\n$/, '')}
-        </SyntaxHighlighter>
-      ) : (
-        <code className={className} {...props}>
-          {children}
-        </code>
-      );
-    }
-  }}
->
-  {msg.content}
-</ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    code({ node, className, children, ...props }) {
+                      return (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
               </div>
-              <div className={`text-xs mt-1 ${msg.role === "user" ? 'text-blue-200' : 
-                msg.role === "ai" ? 'text-gray-500' : 'text-red-600'}`}>
-                {msg.timestamp?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              <div
+                className={`text-xs mt-1 ${
+                  msg.role === "user"
+                    ? "text-blue-200"
+                    : msg.role === "ai"
+                    ? "text-gray-500"
+                    : "text-red-600"
+                }`}
+              >
+                {msg.timestamp?.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </div>
             </div>
           </div>
@@ -251,9 +270,18 @@ export default function Chat() {
           <div className="flex justify-start">
             <div className="bg-white shadow rounded-lg px-4 py-3 max-w-xs rounded-bl-none border border-gray-100">
               <div className="flex space-x-1 items-center">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div
+                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <div
+                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                />
               </div>
             </div>
           </div>
@@ -264,8 +292,17 @@ export default function Chat() {
             onClick={scrollToBottom}
             className="fixed bottom-20 right-6 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                clipRule="evenodd"
+              />
             </svg>
           </button>
         )}
@@ -295,15 +332,35 @@ export default function Chat() {
           <button
             onClick={sendMessage}
             disabled={loading || !input.trim() || isBlocked}
-            className={`px-5 py-3 rounded-lg font-medium ${loading || !input.trim() || isBlocked ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'} transition-colors`}
+            className={`px-5 py-3 rounded-lg font-medium ${
+              loading || !input.trim() || isBlocked
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            } transition-colors`}
           >
             {loading ? (
-              <svg className="animate-spin h-5 w-5 text-white mx-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-5 w-5 text-white mx-2"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
             ) : (
-              'Send'
+              "Send"
             )}
           </button>
         </div>
