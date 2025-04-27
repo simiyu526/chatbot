@@ -9,8 +9,9 @@ type Message = {
   id?: string;
 };
 
-const MAX_REQUESTS = 10;
-const BLOCK_TIME_MS = 60 * 60 * 1000; // 1 hour in milliseconds
+const MAX_REQUESTS = 20;
+const BLOCK_TIME_MS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+
 
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
