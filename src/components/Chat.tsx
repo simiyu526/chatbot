@@ -215,24 +215,29 @@ export default function Chat() {
               } : undefined}
             >
               <div className="whitespace-pre-wrap">
-                <ReactMarkdown 
-                  components={{
-                    code({ node, inline, className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className || '');
-                      return !inline && match ? (
-                        <SyntaxHighlighter style={solarizedlight} language={match[1]} PreTag="div" {...props}>
-                          {String(children).replace(/\n$/, '')}
-                        </SyntaxHighlighter>
-                      ) : (
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      );
-                    }
-                  }}
-                >
-                  {msg.content}
-                </ReactMarkdown>
+              <ReactMarkdown 
+  components={{
+    code({ node, className, children, ...props }) {  // Removed inline from destructuring
+      const match = /language-(\w+)/.exec(className || '');
+      return match ? (
+        <SyntaxHighlighter 
+        style={solarizedlight}
+        language={match[1]}
+        PreTag="div"
+        {...props}
+      >
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
+    }
+  }}
+>
+  {msg.content}
+</ReactMarkdown>
               </div>
               <div className={`text-xs mt-1 ${msg.role === "user" ? 'text-blue-200' : 
                 msg.role === "ai" ? 'text-gray-500' : 'text-red-600'}`}>
