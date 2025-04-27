@@ -119,7 +119,7 @@ export default function Chat() {
       const result = await generateContent(input);
       const aiMessage: Message = { 
         role: "ai", 
-        content: result,
+        content: result || "0",
         timestamp: new Date(),
         id: Date.now().toString()
       };
