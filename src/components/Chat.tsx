@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import { generateContent } from "../utils/geminiClient";
-
+import { BsSend } from "react-icons/bs";
 type Message = {
   role: "user" | "ai" | "error";
   content: string;
@@ -157,10 +157,10 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-indigo-950">
       {/* Header */}
-      <div className="bg-white shadow-sm p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800">Nekebot</h1>
+      <div className="bg-indigo-950 shadow-sm p-4 flex justify-between items-center">
+        <h1 className="text-xl font-bold  text-white">Nekebot</h1>
         {messages.length > 0 && (
           <button
             onClick={clearChat}
@@ -210,9 +210,9 @@ export default function Chat() {
             <div
               className={`max-w-3xl rounded-lg px-4 py-3 ${
                 msg.role === "user"
-                  ? "bg-blue-600 text-white rounded-br-none"
+                  ? "bg-indigo-500 text-white rounded-br-none"
                   : msg.role === "ai"
-                  ? "bg-white text-gray-800 shadow rounded-bl-none border border-gray-100"
+                  ? "text-white font-lg rounded-bl-none"
                   : "bg-red-100 text-red-800 rounded-bl-none cursor-pointer hover:bg-red-200"
               }`}
               onClick={
@@ -310,7 +310,7 @@ export default function Chat() {
       </div>
 
       {/* Input area */}
-      <div className="p-4 bg-white border-t border-gray-200">
+      <div className="p-4 bg-indigo-950">
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
             <input
@@ -319,7 +319,7 @@ export default function Chat() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="bg-indigo-950 text-white w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               maxLength={500}
               disabled={loading || isBlocked}
             />
@@ -360,7 +360,7 @@ export default function Chat() {
                 ></path>
               </svg>
             ) : (
-              "Send"
+              <BsSend size={25} />
             )}
           </button>
         </div>
