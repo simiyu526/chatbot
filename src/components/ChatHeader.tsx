@@ -9,7 +9,7 @@ interface ChatHeaderProps {
 
     
     return (
-      <div className="bg-white shadow-sm p-4 flex justify-between items-center">
+      <div className="bg-indigo-500 shadow-sm p-4 flex justify-between items-center">
         <div className="flex space-x-1">
         <h1 className="text-xl font-bold text-zinc-900 italic">NEKEBOT</h1>
         <img src={myPic} alt="Nekebot" width={20} height={20} />
