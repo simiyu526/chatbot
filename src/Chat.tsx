@@ -22,7 +22,6 @@ export default function Chat() {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockTimeLeft, setBlockTimeLeft] = useState<number>(0);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -151,8 +150,10 @@ export default function Chat() {
     }
   };
 
+
+
   return (
-    <div className="flex flex-col h-screen bg-indigo-950">
+    <div className="flex flex-col h-screen bg-white">
       <ChatHeader clearChat={clearChat} hasMessages={messages.length > 0} />
       {isBlocked && <BlockNotice blockTimeLeft={blockTimeLeft} />}
       <MessagesList

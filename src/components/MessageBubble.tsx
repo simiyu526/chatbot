@@ -20,9 +20,9 @@ export default function MessageBubble({ message, onErrorClick }: MessageBubblePr
   };
 
   const bubbleStyles = {
-    user: "bg-indigo-500 text-white rounded-br-none",
-    ai: "text-white font-lg rounded-bl-none",
-    error: "bg-red-100 text-red-800 rounded-bl-none cursor-pointer hover:bg-red-200",
+    user: "bg-slate-800 text-white rounded-br-none",
+    ai: "text-zinc-900 break-words font-lg rounded-bl-none",
+    error: "bg-red-300 text-black rounded-bl-none cursor-pointer hover:bg-red-200",
   };
 
   const timeStyles = {

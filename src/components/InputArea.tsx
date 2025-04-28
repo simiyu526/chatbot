@@ -20,7 +20,7 @@ export default function InputArea({
   };
 
   return (
-    <div className="p-4 bg-indigo-950">
+    <div className="bg-white rounded-lg shadow-lg relative bottom-3 p-3">
       <div className="flex items-end gap-2">
         <div className="flex-1 relative">
           <input
@@ -29,7 +29,7 @@ export default function InputArea({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
-            className="bg-indigo-950 text-white w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full rounded-lg px-4 py-3 outline-none"
             maxLength={500}
             disabled={loading || isBlocked}
           />
