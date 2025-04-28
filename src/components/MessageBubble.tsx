@@ -1,6 +1,5 @@
 import ReactMarkdown from "react-markdown";
 import { FaClipboard } from "react-icons/fa";
-import { useState } from "react";
 type Message = {
   role: "user" | "ai" | "error";
   content: string;
