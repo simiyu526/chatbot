@@ -1,5 +1,5 @@
 import MessageBubble from "./MessageBubble";
-
+import myBot from "../assets/nekebot.svg"
 type Message = {
   role: "user" | "ai" | "error";
   content: string;
@@ -30,8 +30,10 @@ export default function MessagesList({
     <div className="flex-1 overflow-y-auto p-4 space-y-4" onScroll={onScroll}>
       {messages.length === 0 && (
         <div className="flex flex-col items-center justify-center h-full text-gray-400">
+          <img src={myBot} alt="Bot" width={100} height={100} />
+
           <div className="text-center p-6 max-w-md">
-            <h2 className="text-xl font-medium mb-2">Start a conversation</h2>
+            <h2 className="text-2xl font-medium mb-2">Start a conversation</h2>
             <p className="text-sm">Ask anything and Nekebot will respond to you here.</p>
           </div>
         </div>
