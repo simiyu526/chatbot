@@ -22,7 +22,6 @@ export default function MessageBubble({
       onErrorClick(message);
     }
   };
-const [visible,setVisible]=useState(false)
   const bubbleStyles = {
     user: "bg-slate-800 text-white rounded-br-none",
     ai: "text-zinc-900 break-words font-lg rounded-bl-none",
